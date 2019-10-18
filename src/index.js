@@ -5,39 +5,42 @@ function eval() {
 
 function expressionCalculator(expr) {
   let tokens;
-  if (typeof expr === 'string') {
+  let operators = "+-*/)(";
+  if(expr.length===3 && typeof expr === 'string'){
+    tokens = expr.trim().split('').reverse();
+  }else if (typeof expr === 'string') {
+   /*
+    if(!checkBrackets(expr)){
+      throw "ExpressionError: Brackets must be paired";
+    }
+    */
     tokens = expr.trim().split(' ').reverse();
   } else {
-    tokens = expr;
+     tokens = expr;
   }
-  if (tokens.length === 3) {
-    switch (tokens[1]) {
-      case '+':
-        return Number.parseInt(tokens[2]) + Number.parseInt(tokens[0]);
-      case '*':
-        return Number.parseInt(tokens[2]) * Number.parseInt(tokens[0]);
-      case '-':
-        return Number.parseInt(tokens[2]) - Number.parseInt(tokens[0]);
-      case '/':
-        return Number.parseInt(tokens[2]) / Number.parseInt(tokens[0]);
-    }
-  }
-  if (tokens.length > 3) {
-    let operator = tokens.findIndex(x => x === '+');
-    if (operator === -1) {
-      operator = tokens.findIndex(x => x === '-');
-      if (operator === -1) {
-        operator = tokens.findIndex(x => x === '*');
-        if (operator === -1) {
-          operator = tokens.findIndex(x => x === '/');
-        }
+  if (tokens.length === 3 ) {
+    return calc(tokens[1], Number.parseInt(tokens[2]), Number.parseInt(tokens[0]));
       }
-    }
+  if (tokens.length > 3) {
+   let operator,
+      i=0;
+         do {
+      operator = tokens.findIndex(x => x === operators[i]);
+      i++;
+    } while (operator === -1 && i < operators.length);
     let right = tokens.slice(0, operator);
     let b = expressionCalculator(right);
     let left = tokens.slice(operator + 1);
     let a = expressionCalculator(left);
-    switch (tokens[operator]) {
+    return calc(tokens[operator], a, b);
+  }
+  if (tokens.length === 1) {
+    return Number.parseInt(expr);
+  }
+}
+
+function calc(operator, a, b) {
+switch (operator) {
       case '+':
         return a + b;
       case '*':
@@ -45,18 +48,28 @@ function expressionCalculator(expr) {
       case '-':
         return a - b;
       case '/':
+        if(!b){
+          throw "TypeError: Division by zero.";
+        }
         return (a / b);
     }
-  }
-  if (tokens.length === 1) {
-    return Number.parseInt(expr);
-  }
 }
 /*
-const expr = "1 / 0";
-let r = expressionCalculator(expr);
-
+function checkBrackets(expr){
+ let sum=expr.match(/[(]+/).length;
+ let sum2=expr.match(/[)]+/).length;
+  if(sum!==sum2){
+    return false;
+  }else{
+    return true;
+  }
+}
 */
+/*
+const expr = "(2 + (2)";
+let r = expressionCalculator(expr);
+*/
+
 module.exports = {
   expressionCalculator
 }
