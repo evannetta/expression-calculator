@@ -9,11 +9,7 @@ function expressionCalculator(expr) {
   if(expr.length===3 && typeof expr === 'string'){
     tokens = expr.trim().split('').reverse();
   }else if (typeof expr === 'string') {
-   /*
-    if(!checkBrackets(expr)){
-      throw "ExpressionError: Brackets must be paired";
-    }
-    */
+   
     tokens = expr.trim().split(' ').reverse();
   } else {
      tokens = expr;
@@ -54,21 +50,6 @@ switch (operator) {
         return (a / b);
     }
 }
-/*
-function checkBrackets(expr){
- let sum=expr.match(/[(]+/).length;
- let sum2=expr.match(/[)]+/).length;
-  if(sum!==sum2){
-    return false;
-  }else{
-    return true;
-  }
-}
-*/
-/*
-const expr = "(2 + (2)";
-let r = expressionCalculator(expr);
-*/
 
 module.exports = {
   expressionCalculator
