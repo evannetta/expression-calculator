@@ -5,7 +5,7 @@ function eval() {
 
 function expressionCalculator(expr) {
   let tokens;
-  let operators = "(+-*/)";
+  let operators = "+-*/)(";
   if(expr.length===3 && typeof expr === 'string'){
     tokens = expr.trim().split('').reverse();
   }else if (typeof expr === 'string') {
@@ -20,7 +20,7 @@ function expressionCalculator(expr) {
     return Number.parseInt(expr);
   }
   if (tokens.length <= 3 ) {
-    return calc(tokens[1], Number.parseInt(tokens[2]), Number.parseInt(tokens[0]));
+    return calc(1, Number.parseInt(tokens[2]), Number.parseInt(tokens[0]), tokens);
   }
   if (tokens.length > 3) {
    let operator,
@@ -33,18 +33,18 @@ function expressionCalculator(expr) {
     let b = expressionCalculator(right);
     let left = tokens.slice(operator + 1);
     let a = expressionCalculator(left);
-    return calc(tokens[operator], a, b);
+    return calc(operator, a, b,tokens);
   }
 }
 
-function calc(operator, a, b) {
+function calc(operator, a, b,expr) {
   if(isNaN(b)){
    return a;
   }
   if(isNaN(a)){
     return b;
   }
-  switch (operator) {
+  switch (expr[operator]) {
     case '+':
       return a + b;
     case '*':
@@ -52,7 +52,7 @@ function calc(operator, a, b) {
     case '-':
       return a - b;
     case '(':
-      return calc(operator+1, a, b);
+      return calc(operator+1, a, b,expr);
     case '/':
       if(!b){
         throw "TypeError: Division by zero.";
